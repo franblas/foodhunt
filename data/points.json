@@ -1,0 +1,7 @@
+{
+  "Myself": {"lat": 48.834972, "lon": 2.326856, "size": "", "price": 0.0, "datetime": "2015-10-17T19:00:00", "type": ""},
+  "Monoprix Daguerre": {"lat": 48.833257, "lon": 2.331192, "size": "medium", "price":  1.63, "datetime": "2015-10-17T19:00:00", "type": "moyenne surface"},
+  "Carrefour Express": {"lat": 48.834601, "lon": 2.327442, "size": "small", "price":  1.49, "datetime": "2015-10-17T19:00:00", "type": "superette ville"},
+  "Franprix": {"lat": 48.83387, "lon": 2.329572, "size": "small", "price":  1.54, "datetime": "2015-10-17T19:00:00", "type": "superette ville"},
+  "Leader Price Express": {"lat": 48.834793, "lon": 2.326608, "size": "small", "price":  -1, "datetime": "2015-10-17T19:00:00", "type": "superette ville"}
+}

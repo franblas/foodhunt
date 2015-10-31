@@ -1,0 +1,10 @@
+{
+  "Myself": {"lat": 48.839312, "lng": 2.322275, "size": "", "price": 0.0, "datetime": "2015-10-17T19:00:00", "type": ""},
+  "Franprix": {"lat": 48.841642, "lng": 2.328331, "size": "small", "price": 1.54, "datetime": "2015-10-17T19:00:00", "type": "superette ville"},
+  "Franprix": {"lat": 48.834803, "lng": 2.320008, "size": "small", "price": 1.54, "datetime": "2015-10-17T19:00:00", "type": "superette ville"},
+  "Simply Market Maine": {"lat": 48.840135, "lng": 2.322109, "size": "medium", "price": 1.55, "datetime": "2015-10-17T19:00:00", "type": "moyenne surface"},
+  "Monoprix Montparnasse": {"lat": 48.841314, "lng": 2.322211, "size": "medium", "price": 1.63, "datetime": "2015-10-17T19:00:00", "type": "moyenne surface"},
+  "8 à huit": {"lat": 48.840955, "lng": 2.317527, "size": "small", "price": 1.49, "datetime": "2015-10-17T19:00:00", "type": "superette"},
+  "U Express": {"lat": 48.84154, "lng": 2.326614, "size": "small", "price": 1.55, "datetime": "2015-10-17T19:00:00", "type": "superette ville"},
+  "Monop' Daily Vaugirard": {"lat": 48.840744, "lng": 2.320007, "size": "small", "price": 1.63, "datetime": "2015-10-17T19:00:00", "type": "superette ville"}
+}
