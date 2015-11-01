@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from database import Database
 from carrefour import Carrefour
 import time, os, json
 
@@ -7,6 +8,7 @@ class Robot(object):
 
     def __init__(self, name):
         self.name = name
+        self.db = Database('test')
 
     def log(self, msg):
         print '[INFO] [' + self.name + '] ' + msg
@@ -37,6 +39,5 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            res += datas
-            with open('carrefour_products.json', 'w') as out:
-                json.dump(res, out)
+            self.db.insert_product(collection='carrefour', doc=datas)
+        self.db.close()

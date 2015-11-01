@@ -3,7 +3,7 @@
 from scraper import Scraper
 from bs4 import BeautifulSoup as bs
 import requests as rq
-import re, spynner, time
+import re, time
 
 class SimplyMarket(Scraper):
 
