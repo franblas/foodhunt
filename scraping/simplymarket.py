@@ -84,13 +84,29 @@ class SimplyMarket(Scraper):
         return filename
 
     def parse_page_product(self, filename):
-        data = open(filename).read().replace('\n', '')
+        data = open(filename).read().replace('\n', '').decode(self.encoding)
         soup = bs(data, self.bs_config)
         products_found = soup.find_all('div', {'class': 'tabloVignette'})
         products = list()
         for product in products_found:
-            # TODO: return dictionary
-            #products.append({'name': n, 'unit': u, 'price': p})
-            print product.thead.a.text
-            print product.find('div', {'class': 'prix'}).text.strip()
-        #return products()
+            prod = product.thead.a.text
+            p_split = prod.split(' ')
+            u = p_split[-1]
+            if not re.findall(r'\d', u):
+                u = '1'
+            n = prod.replace(u, '')
+            p = product.find('div', {'class': 'prix'}).text.strip().replace(',', '.').encode(self.encoding).replace('€', '')
+            u = self.unit_maker(name=n, unit=u)
+            products.append({'name': n, 'unit': u, 'price': p})
+        return products
+
+    def unit_maker(self, name, unit):
+        if 'x' not in unit:
+            n_test = re.findall(r'x\d+', name)
+            if n_test:
+                nb = n_test[0].replace('x', '')
+                return nb + 'x' + unit
+            else:
+                return '1x' + unit
+        else:
+            return unit

@@ -108,8 +108,8 @@ class Carrefour(Scraper):
             self.log('Found 0 next pages')
             return 0
 
-    def parse_page_product(self, filename):
-        data = open(filename).read().replace('\n', '')
+    def parse_page_product(self, filename, isNextPage):
+        data = open(filename).read().replace('\n', '').decode(self.encoding)
         soup = bs(data, self.bs_config)
         prices = soup.find_all('div', attrs={'class': 'spec price'})
         units = soup.find_all('span', attrs={'class': 'unit'})
@@ -120,8 +120,28 @@ class Carrefour(Scraper):
                 corrected_names.append(name)
         products = list()
         for name, unit, price in zip(corrected_names, units, prices):
-            p = price.text.replace('Prix Promo : ', '').encode(self.encoding).replace('â‚¬', '.') # Euro sign is not well decode, TODO: Need to be fixed
+            if isNextPage:
+                p = price.text.replace('Prix Promo : ', '').encode(self.encoding).replace('?', '.')
+            else:
+                #p = price.text.replace('Prix Promo : ', '').encode(self.encoding).replace('â‚¬', '.')
+                p = price.text.replace('Prix Promo : ', '').encode(self.encoding).replace('€', '.')
             n = name.span.text
-            u = unit.text
-            products.append({'name': n, 'unit': u, 'price': p})
+            u = unit.text.lower().replace(',', '.')
+            u_spl = u.split(' ')
+            res, res2 = re.findall(r'[-+]?\d*\.\d+|\d+', u), ''
+            for us in u_spl:
+                res2 += re.sub('\d', '', us) + ' '
+            res2 = filter(None, res2.replace('.', ' ').split(' '))[-1]
+            if u_spl[0] == 'la' or u_spl[0] == 'le':
+                if len(res) > 1:
+                    res.pop(0)
+            products.append({'name': n, 'unit': self.unit_maker(nums=res, unit=res2), 'price': p})
         return products
+
+    def unit_maker(self, nums, unit):
+        if len(nums) == 2:
+            return nums[0] + 'x' + nums[1] + '' + unit
+        elif len(nums) == 1:
+            return '1x' + nums[0] + '' + unit
+        else:
+            return '1x1'
