@@ -4,6 +4,7 @@ from database import Database
 from carrefour import Carrefour
 from simplymarket import SimplyMarket
 from monoprix import Monoprix
+from auchan import Auchan
 import time, os, json
 
 class Robot(object):
@@ -15,6 +16,9 @@ class Robot(object):
     def log(self, msg):
         print '[INFO] [' + self.name + '] ' + msg
 
+    '''
+    Carrefour
+    '''
     def carrefour_scraping(self):
         urls = Carrefour().get_all_sections()
         for u in urls:
@@ -47,6 +51,9 @@ class Robot(object):
             self.db.insert_product(collection='carrefour', doc=datas)
         self.db.close()
 
+    '''
+    SimplyMarket
+    '''
     def simplymarket_scraping(self):
         s = SimplyMarket()
         s.scraping()
@@ -71,6 +78,9 @@ class Robot(object):
             self.db.insert_product(collection='simplymarket', doc=datas)
         self.db.close()
 
+    '''
+    Monoprix
+    '''
     def monoprix_scraping(self):
         m = Monoprix()
         sections = m.get_all_sections()
@@ -89,3 +99,36 @@ class Robot(object):
                 time.sleep(5)
                 self.log('Products scraped '+ subsubsection)
             self.log('All products scraped for ' + section)
+
+    def monorpix_parsing(self):
+        pass
+
+    '''
+    Auchan
+    '''
+    def auchan_scraping(self):
+        a = Auchan()
+        a.scraping()
+
+    def auchan_parsing(self, folder='auchan/'):
+        a = Auchan()
+        files = list()
+        for o in os.walk(folder):
+            files = o[2]
+        res = list()
+        for f in files:
+            f_split = f.split('_')
+            shop = f_split[0]
+            category = f_split[1]
+            sub = f_split[2]
+            for ff in f_split[3:]:
+                sub += '-' + ff
+            subcategory = sub.decode('utf-8')
+            datas = a.parse_page_product(filename=folder + f)
+            for d in datas:
+                d['shop'] = shop
+                d['category'] = category
+                d['subcategory'] = subcategory
+            self.log("Parsed: " + f)
+            self.db.insert_product(collection='auchan', doc=datas)
+        self.db.close()
