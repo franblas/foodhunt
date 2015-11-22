@@ -6,6 +6,7 @@ from simplymarket import SimplyMarket
 from monoprix import Monoprix
 from auchan import Auchan
 from gvingt import GVingt
+from casino import Casino
 import time, os, json
 
 class Robot(object):
@@ -177,3 +178,24 @@ class Robot(object):
             self.log("Parsed: " + f)
             self.db.insert_product(collection='g20', doc=datas)
         self.db.close()
+
+    '''
+    Casino
+    '''
+    def casino_scraping(self):
+        ca = Casino()
+        sections = ca.get_all_sections()
+        for section in sections:
+            subsections = ca.get_subsections(url=section)
+            for subsection in subsections:
+                ca = Casino()
+                html_content = ca.get_all_products_page(url=subsection)
+                filename = ca.filename_maker(url_catego=section, url_subcatego=subsection)
+                with open(ca.shop + '/' + filename, 'w') as out:
+                    out.write(html_content)
+                time.sleep(5)
+                self.log('Products scraped '+ subsection)
+            self.log('All products scraped for ' + section)
+
+    def casino_parsing(self, folder='casino/'):
+        pass
