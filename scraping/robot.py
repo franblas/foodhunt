@@ -5,6 +5,7 @@ from carrefour import Carrefour
 from simplymarket import SimplyMarket
 from monoprix import Monoprix
 from auchan import Auchan
+from gvingt import GVingt
 import time, os, json
 
 class Robot(object):
@@ -100,8 +101,28 @@ class Robot(object):
                 self.log('Products scraped '+ subsubsection)
             self.log('All products scraped for ' + section)
 
-    def monorpix_parsing(self):
-        pass
+    def monoprix_parsing(self, folder='monoprix/'):
+        m = Monoprix()
+        files = list()
+        for o in os.walk(folder):
+            files = o[2]
+        res = list()
+        for f in files:
+            f_split = f.split('_')
+            shop = f_split[0]
+            category = f_split[1]
+            sub = f_split[2]
+            for ff in f_split[3:]:
+                sub += '-' + ff
+            subcategory = sub.decode('utf-8')
+            datas = m.parse_page_product(filename=folder + f)
+            for d in datas:
+                d['shop'] = shop
+                d['category'] = category
+                d['subcategory'] = subcategory
+            self.log("Parsed: " + f)
+            self.db.insert_product(collection='monoprix', doc=datas)
+        self.db.close()
 
     '''
     Auchan
@@ -131,4 +152,28 @@ class Robot(object):
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
             self.db.insert_product(collection='auchan', doc=datas)
+        self.db.close()
+
+    '''
+    G20
+    '''
+    def g20_scraping(self):
+        g = GVingt()
+        g.scraping()
+
+    def g20_parsing(self, folder='g20/'):
+        g = GVingt()
+        files = list()
+        for o in os.walk(folder):
+            files = o[2]
+        res = list()
+        for f in files:
+            shop = f.split('_')[0]
+            category, subcategory, datas = g.parse_page_product(filename=folder + f)
+            for d in datas:
+                d['shop'] = shop
+                d['category'] = category
+                d['subcategory'] = subcategory
+            self.log("Parsed: " + f)
+            self.db.insert_product(collection='g20', doc=datas)
         self.db.close()

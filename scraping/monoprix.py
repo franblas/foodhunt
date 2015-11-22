@@ -75,3 +75,42 @@ class Monoprix(Scraper):
         underunder_category = ''.join([i for i in split_url_subsubcatego[4].split(';')[0] if not i.isdigit()])
         filename = self.shop + '_' + category[:-1] + '_' + under_category[:-1] + '_' + underunder_category[:-1]
         return filename
+
+    def parse_page_product(self, filename):
+        data = open(filename).read().replace('\n', '').decode(self.encoding)
+        soup = bs(data, self.bs_config)
+        products_found = soup.find_all('div', {'class': 'SubBox06'})
+        prices_found = soup.find_all('p', {'class': 'priceBox'})
+        products = list()
+        for product, price in zip(products_found, prices_found):
+            desc = product.find_all('span')
+            if len(desc) > 2:
+                name = desc[0].text + desc[1].text
+                n = name.replace('\t', '').lower()
+                p = price.text.replace('?', '').strip().encode(self.encoding).replace(',', '.')
+                unit = desc[2].text.lower().replace(',', '.')
+                if unit:
+                    u_spl = unit.split(' ')
+                    res, res2 = re.findall(r'[-+]?\d*\.\d+|\d+', unit), ''
+                    for us in u_spl:
+                        res2 += re.sub('\d', '', us) + ' '
+                    res2 = filter(None, res2.replace('.', ' ').split(' '))[-1]
+                    if u_spl[0] == 'la' or u_spl[0] == 'le':
+                        if len(res) > 1:
+                            res.pop(0)
+                    u = self.unit_maker(nums=res, unit=res2)
+                else:
+                    u = '1x1'
+                products.append({'name': n, 'unit': u, 'price': p})
+            else:
+                pass
+        return products
+
+
+    def unit_maker(self, nums, unit):
+        if len(nums) == 2:
+            return nums[0] + 'x' + nums[1] + '' + unit
+        elif len(nums) == 1:
+            return '1x' + nums[0] + '' + unit
+        else:
+            return '1x1'
