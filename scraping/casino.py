@@ -77,7 +77,37 @@ class Casino(Scraper):
         return filename
 
     def parse_page_product(self, filename):
-        pass
+        data = open(filename).read().replace('\n', '').decode(self.encoding)
+        soup = bs(data, self.bs_config)
+        refs = soup.find_all('div', {'class': 'inner'})
+        products = list()
+        for ref in refs:
+            description = filter(None, ref.find('div', {'class': 'description'}).text.strip().lower().split('\t'))
+            n = description[0]
+            p = ref.find('div', {'class': 'prix'}).text.strip().replace(',', '.')[:-1]
+            if len(description) > 1:
+                unit = description[1].replace(',', '.').replace(' ','')
+            else:
+                unit = '1x1'
+            u = self.unit_maker(name=n, unit=unit)
+            products.append({'name': n, 'unit': u, 'price': p})
+        return products
 
-    def unit_maker(self, nums, unit):
-        pass
+    def unit_maker(self, name, unit):
+        first_test = re.findall(r'x \d+\D+|x\d+\D+', unit)
+        if first_test:
+            test_1 = re.findall(r'\d+ ?\D+', unit)
+            tt = re.findall(r'\d+', test_1[0])
+            if len(test_1) > 1:
+                return tt[0] + 'x' + ''.join(test_1[1:])
+            else:
+                return '1x' + test_1[0]
+        else:
+            n_test = re.findall(r'\d+.?\d+?\D+|\d+ \D+', unit)
+            if n_test:
+                if 'la' in unit or 'le' in unit or 'l' in unit:
+                    return '1x' + n_test[0].replace(' ', '')
+                else:
+                    return '1x' + unit
+            else:
+                return '1x' + unit

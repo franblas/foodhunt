@@ -13,7 +13,7 @@ class Robot(object):
 
     def __init__(self, name):
         self.name = name
-        self.db = Database('test')
+        self.db = Database('products')
 
     def log(self, msg):
         print '[INFO] [' + self.name + '] ' + msg
@@ -50,7 +50,7 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            self.db.insert_product(collection='carrefour', doc=datas)
+            self.db.insert_product(collection='shopproducts', doc=datas)
         self.db.close()
 
     '''
@@ -77,7 +77,7 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            self.db.insert_product(collection='simplymarket', doc=datas)
+            self.db.insert_product(collection='shopproducts', doc=datas)
         self.db.close()
 
     '''
@@ -122,7 +122,7 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            self.db.insert_product(collection='monoprix', doc=datas)
+            self.db.insert_product(collection='shopproducts', doc=datas)
         self.db.close()
 
     '''
@@ -152,7 +152,7 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            self.db.insert_product(collection='auchan', doc=datas)
+            self.db.insert_product(collection='shopproducts', doc=datas)
         self.db.close()
 
     '''
@@ -176,7 +176,7 @@ class Robot(object):
                 d['category'] = category
                 d['subcategory'] = subcategory
             self.log("Parsed: " + f)
-            self.db.insert_product(collection='g20', doc=datas)
+            self.db.insert_product(collection='shopproducts', doc=datas)
         self.db.close()
 
     '''
@@ -198,4 +198,21 @@ class Robot(object):
             self.log('All products scraped for ' + section)
 
     def casino_parsing(self, folder='casino/'):
-        pass
+        ca = Casino()
+        files = list()
+        for o in os.walk(folder):
+            files = o[2]
+        res = list()
+        for f in files:
+            f_split = f.split('_')
+            shop = f_split[0]
+            category = f_split[1]
+            subcategory = f_split[2]
+            datas = ca.parse_page_product(filename=folder + f)
+            for d in datas:
+                d['shop'] = shop
+                d['category'] = category
+                d['subcategory'] = subcategory
+            self.log("Parsed: " + f)
+            self.db.insert_product(collection='shopproducts', doc=datas)
+        self.db.close()
