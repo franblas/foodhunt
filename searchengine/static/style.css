@@ -1,0 +1,74 @@
+/*
+* CSS
+*/
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font: Helvetica, Verdana, sans-serif;
+}
+
+img {
+  height: 30%;
+  width: 30%;
+}
+
+/* top */
+#input-top {
+  width: 100%;
+  height:10%;
+  background-color: #2980b9;
+  text-align: center;
+  overflow: hidden;
+}
+
+#search-query {
+  font-size: 25;
+  margin-top: 2%;
+  width: 50%;
+}
+
+/* Containers */
+#main-container {
+  width: 100%;
+  height: 90%;
+  background-color: #ccc;
+  overflow: hidden;
+}
+
+.shop-container {
+  width: 16.5%;
+  height: 100%;
+  overflow: scroll;
+  background-color: #fff;
+  float: left;
+}
+
+h3 {
+  text-align: center;
+}
+
+/* Lists */
+ul {
+  list-style-type: none;
+}
+.product {
+  padding-right: 1%;
+}
+.product-name {
+  font-weight: bold;
+  color: blue;
+}
+.product-category {
+  color: green;
+}
+.product-subcategory {
+  color: green;
+}
+.product-price {
+  color: red;
+}
+.product-unit {
+  color: grey;
+}
